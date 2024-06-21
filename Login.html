@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html dir="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Inventaa" />
+  
+    <!-- Favicon icon -->
+    
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/big/LOGO.png" />
+    <title>Inventaa Led Lights Pvt Ltd</title>
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.min.css" rel="stylesheet">
+    <!--<link href="../assets/css/main.css" rel="stylesheet">-->
+   
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Preloader - style you can find in spinners.css -->
+        <!-- ============================================================== -->
+        
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+         
+     
+            <div class="auth-wrapper d-flex no-block justify-content-center align-items-center "
+                 style="background:url(../assets/images/big/WebBG.png) no-repeat  center;">
+
+                <div class="auth-box row">
+                </div>
+                <div class="col-lg-3 col-md-6 bg-white ">
+                    <div class="p-3">
+                        <div class="text-center">
+                            <img src="../assets/images/inventaa_logo.png" alt="wrapkit">
+                        </div>
+                        <h3 class="mt-3 text-center">Supplier Login</h3>
+                        <form class="mt-4">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="text-dark" for="uname">Username</label>
+                                        <input class="form-control" id="DMSUserName" type="text"
+                                               placeholder="Enter your username">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="text-dark" for="pwd">Password</label>
+                                        <input class="form-control" id="DMSPassword" type="password"
+                                               placeholder="Enter your password"><span class="symbol-input101" onclick="myFunction()"> <i class="fa fa-eye" aria-hidden="true" type="button"></i> </span>
+                                    </div>
+                                </div>
+                                <div class="rememberMe">
+                                    <input type="checkbox" value="lsRememberMe" id="rememberMe"> <label for="rememberMe">Remember me</label>
+                                </div>
+                                <div class="col-lg-12 text-center">
+                                    <input type="button" class="btn btn-block btn-dark" onclick="WSP_DoLogin()" value="Sign In" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+       </div>
+        <!-- ============================================================== -->
+        <!-- Login box.scss -->
+        <!-- ============================================================== -->
+   
+    <!-- ============================================================== -->
+    <!-- All Required js -->
+    <!-- ============================================================== -->
+    <script src="../assets/libs/jquery/dist/jquery.min.js "></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="../assets/libs/popper.js/dist/umd/popper.min.js "></script>
+    <script src="../assets/libs/bootstrap/dist/js/bootstrap.min.js "></script>
+    <script src="../assets/js/bootbox.js" type="text/javascript"></script>
+    <!-- ============================================================== -->
+    <!-- This page plugin js -->
+    <!-- ============================================================== -->
+    <script>
+        $(".preloader ").fadeIn();
+        function ValidateMember() {
+            if ($("#DMSUserName").val() == "") { bootbox.alert({ message: "Please Enter UserName!", size: 'small' }); $("#DMSUserName").focus(); return false; }
+            if ($("#DMSPassword").val() == "") { bootbox.alert({ message: "Please Enter Password!", size: 'small' }); $("#DMSPassword").focus(); return false; }
+
+            return true;
+        };
+        function WSP_DoLogin() {
+            try {
+                $(".preloader ").fadeIn();
+                if (ValidateMember()) {
+                    var data = {};
+                    data.UserName = $("#DMSUserName").val();
+                    data.Password = $("#DMSPassword").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "DMS/DMSLogin",
+                        data: JSON.stringify(data),
+                        contentType: "application/json",                    
+                        success: function (data) {
+                            if (data.Status == "1") {
+                                empcode = data.Users;
+                                empsupname = data.Name;
+                                localStorage.setItem("SUPID", empcode); 
+                                localStorage.setItem("SupName", empsupname);
+                                lsRememberMe();
+                                window.location.href = "Default.aspx";
+                            }
+                            else {
+                                $(".preloader ").fadeOut();
+                                bootbox.alert({ message: "Invalid User Name and Password!", size: 'small' });
+                            }
+                        },
+                        error: function (error) {
+                            $(".preloader ").fadeOut();
+                        }
+                    });
+                }
+            }
+            catch(ex)
+            {
+                $(".preloader ").fadeOut();
+            }
+        }
+
+        //----------------- view password--------------------------------
+        function myFunction() {
+            var x = document.getElementById("DMSPassword");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+        //------------------------ remember me ----------------------------
+        const rmCheck = document.getElementById("rememberMe"),
+            emailInput = document.getElementById("DMSUserName");
+        PasswordInput = document.getElementById("DMSPassword");
+        
+
+        if (localStorage.checkbox && localStorage.checkbox !== "") {
+            rmCheck.setAttribute("checked", "checked");
+            emailInput.value = localStorage.username;
+            PasswordInput.value = localStorage.Password;
+           
+        } else {
+            rmCheck.removeAttribute("checked");
+            emailInput.value = "";
+            PasswordInput.value = "";
+        }
+
+        function lsRememberMe() {
+            if (rmCheck.checked && emailInput.value !== "") {
+                localStorage.username = emailInput.value;
+                localStorage.Password = PasswordInput.value;
+                localStorage.checkbox = rmCheck.value;
+            } else {
+                localStorage.username = "";
+                localStorage.checkbox = "";
+            }
+        }
+        
+
+    </script>
+</body>
+
+</html>
